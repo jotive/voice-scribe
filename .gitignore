@@ -4,3 +4,11 @@ __pycache__/
 .env
 logs/
 *.log
+
+# huggingface model cache (downloaded locally, never commit)
+.cache/
+models/
+*.bin
+*.safetensors
+*.ot
+*.gguf

@@ -7,9 +7,10 @@ from pynput import keyboard
 from datetime import datetime
 from pathlib import Path
 
-from config import HOTKEY, LOG_DIR
+from config import HOTKEY, LOG_DIR, MODEL_SIZE
 from recorder import Recorder
 from transcriber import Transcriber
+from model_manager import ensure_model
 from ui import App
 
 
@@ -125,6 +126,12 @@ def main():
     # load model in background so UI appears immediately
     def _load():
         global _transcriber
+        ok = ensure_model(
+            MODEL_SIZE,
+            on_status=lambda msg, color: _app.after(0, lambda: _app.set_status(msg, color)),
+        )
+        if not ok:
+            return
         _transcriber = Transcriber(on_load=lambda msg: _app.after(0, lambda: _app.append(msg, "info")))
         _app.after(0, lambda: _app.set_status("● idle", "#666666"))
 
