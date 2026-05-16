@@ -5,6 +5,8 @@ Usage: python check_hardware.py
 import subprocess
 import sys
 
+sys.stdout.reconfigure(encoding="utf-8")
+
 # faster-whisper VRAM requirements (int8 quantization, approximate)
 MODELS = [
     ("tiny",     0.2,  "~0.15 GB",  "fastest, lower accuracy"),
@@ -53,9 +55,10 @@ def get_ram_gb():
 
 def check_cuda():
     try:
-        import torch
-        return torch.cuda.is_available(), torch.version.cuda
-    except ImportError:
+        import ctranslate2
+        types = ctranslate2.get_supported_compute_types("cuda")
+        return len(types) > 0, f"via ctranslate2 ({', '.join(sorted(types))})"
+    except Exception:
         return False, None
 
 
